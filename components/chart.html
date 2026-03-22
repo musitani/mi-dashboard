@@ -18,7 +18,6 @@
   --text:    #f0eee8;
   --muted:   #7070a0;
   --faint:   #3a3a6a;
-  --accent:  #4466ff;
   --mono:    'DM Mono', monospace;
   --display: 'Syne', sans-serif;
 }
@@ -28,16 +27,15 @@ body {
   color: var(--text);
   font-family: var(--mono);
   font-size: 12px;
-  padding: 0 0 32px 0;
+  padding: 0 0 24px 0;
 }
 
-/* ── Grid principal ── */
+/* ── Grid ── */
 .dashboard {
   display: grid;
-  grid-template-columns: 1fr 320px;
-  grid-template-rows: auto auto auto;
-  gap: 14px;
-  padding: 4px 2px 0;
+  grid-template-columns: 1fr 300px;
+  gap: 12px;
+  padding: 2px 2px 0;
 }
 
 /* ── Cards ── */
@@ -45,246 +43,285 @@ body {
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 18px 20px 14px;
+  padding: 16px 18px 12px;
   transition: border-color .25s;
 }
 .card:hover { border-color: var(--border2); }
 
 .card-label {
-  font-size: .65rem;
+  font-size: .62rem;
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--faint);
   border-left: 2px solid var(--faint);
   padding-left: 7px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
-/* ── Gráfico principal ── */
+/* ── Layout cards ── */
 .card-main  { grid-column: 1; grid-row: 1; }
 .card-pie   { grid-column: 2; grid-row: 1; }
 .card-delta { grid-column: 1; grid-row: 2; }
 .card-table { grid-column: 1 / -1; grid-row: 3; }
+.card-source { grid-column: 1 / -1; grid-row: 4; }
 
 canvas { display: block; width: 100% !important; }
 
-/* ── Leyenda ── */
+/* ── Leyenda interactiva ── */
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 12px;
+  gap: 5px;
+  margin-top: 10px;
 }
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
+  gap: 5px;
+  padding: 3px 9px;
   border: 1px solid var(--border);
   border-radius: 20px;
   cursor: pointer;
   transition: all .2s;
   user-select: none;
+  font-size: .68rem;
+  color: var(--muted);
 }
 .legend-item:hover { border-color: var(--border2); color: var(--text); }
-.legend-item.hidden { opacity: .35; }
-.legend-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%; flex-shrink: 0;
-}
+.legend-item.hidden { opacity: .3; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-/* ── Barras de delta ── */
+/* ── Barras delta ── */
 .delta-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 .delta-label {
-  width: 130px;
+  width: 148px;
   text-align: right;
   color: var(--muted);
-  font-size: .7rem;
+  font-size: .68rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  flex-shrink: 0;
 }
 .delta-bar-wrap {
   flex: 1;
-  height: 20px;
+  height: 18px;
   background: var(--bg3);
   border-radius: 3px;
-  overflow: visible;
   position: relative;
+}
+.delta-zero {
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 1px;
+  background: var(--border2);
+  z-index: 1;
 }
 .delta-bar {
   position: absolute;
   height: 100%;
   border-radius: 3px;
   top: 0;
-  transition: width .6s cubic-bezier(.22,1,.36,1);
+  z-index: 2;
+  transition: width .7s cubic-bezier(.22,1,.36,1);
 }
 .delta-val {
   width: 54px;
-  text-align: left;
-  font-size: .7rem;
+  font-size: .68rem;
   font-weight: 500;
+  flex-shrink: 0;
 }
 
 /* ── Tabla ── */
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: .68rem;
+  font-size: .65rem;
 }
 .data-table th {
   color: var(--muted);
   font-weight: 400;
   letter-spacing: .06em;
   border-bottom: 1px solid var(--border);
-  padding: 5px 10px;
+  padding: 5px 8px;
   text-align: right;
   white-space: nowrap;
 }
 .data-table th:first-child { text-align: left; }
 .data-table td {
-  padding: 4px 10px;
+  padding: 4px 8px;
   text-align: right;
   border-bottom: 1px solid var(--border);
   color: var(--muted);
-  transition: background .15s;
 }
 .data-table td:first-child { text-align: left; color: var(--text); font-weight: 500; }
 .data-table tr:hover td { background: var(--bg3); color: var(--text); }
-.data-table .heat-high { color: #FF4455 !important; }
-.data-table .heat-mid  { color: #FFAA22 !important; }
-.data-table .heat-low  { color: #2DDBA4 !important; }
+.data-table .heat-hi  { color: #FF4455 !important; font-weight: 500; }
+.data-table .heat-mid { color: #FFAA22 !important; }
+.data-table .heat-lo  { color: #2DDBA4 !important; }
 
-/* ── Tooltip custom ── */
-.tooltip-custom {
+/* ── Fuente ── */
+.source-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: .63rem;
+  color: var(--faint);
+  line-height: 1.7;
+}
+.source-icon {
+  font-size: .9rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.source-box a { color: var(--faint); text-decoration: underline; }
+.source-box strong { color: var(--muted); }
+
+/* ── Tooltip ── */
+.tip {
   position: fixed;
   background: #10101e;
   border: 1px solid var(--border2);
   border-radius: 6px;
   padding: 10px 14px;
   pointer-events: none;
-  font-size: .72rem;
+  font-size: .7rem;
   color: var(--text);
   z-index: 9999;
   display: none;
-  min-width: 160px;
-  box-shadow: 0 4px 24px rgba(0,0,0,.6);
+  min-width: 200px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.7);
 }
-.tooltip-year {
+.tip-year {
   font-family: var(--display);
-  font-size: 1rem;
+  font-size: .95rem;
   font-weight: 700;
-  margin-bottom: 6px;
-  color: var(--text);
+  margin-bottom: 7px;
 }
-.tooltip-row {
+.tip-row {
   display: flex;
   align-items: center;
   gap: 7px;
   margin: 3px 0;
   color: var(--muted);
 }
-.tooltip-row .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.tooltip-row .val { margin-left: auto; color: var(--text); font-weight: 500; }
+.tip-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.tip-val { margin-left: auto; color: var(--text); font-weight: 500; }
 
-/* ── Fade in ── */
+/* ── Animación entrada ── */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .card { animation: fadeUp .4s ease both; }
-.card:nth-child(1) { animation-delay: .05s; }
-.card:nth-child(2) { animation-delay: .12s; }
-.card:nth-child(3) { animation-delay: .18s; }
-.card:nth-child(4) { animation-delay: .24s; }
+.card:nth-child(1) { animation-delay: .04s; }
+.card:nth-child(2) { animation-delay: .10s; }
+.card:nth-child(3) { animation-delay: .16s; }
+.card:nth-child(4) { animation-delay: .22s; }
+.card:nth-child(5) { animation-delay: .28s; }
 </style>
 </head>
 <body>
 
 <div class="dashboard">
 
-  <!-- ── Gráfico principal ── -->
+  <!-- Gráfico principal -->
   <div class="card card-main">
-    <div class="card-label" id="main-label">Evolución temporal</div>
+    <div class="card-label" id="lbl-main">Evolución temporal</div>
     <canvas id="mainChart" height="260"></canvas>
     <div class="legend" id="mainLegend"></div>
   </div>
 
-  <!-- ── Donut ── -->
+  <!-- Donut -->
   <div class="card card-pie">
-    <div class="card-label" id="pie-label">Distribución</div>
-    <canvas id="pieChart" height="220"></canvas>
+    <div class="card-label" id="lbl-pie">Distribución</div>
+    <canvas id="pieChart" height="230"></canvas>
   </div>
 
-  <!-- ── Delta barras ── -->
+  <!-- Delta -->
   <div class="card card-delta">
-    <div class="card-label" id="delta-label">Cambio en participación (pp)</div>
+    <div class="card-label" id="lbl-delta">Cambio en participación (pp)</div>
     <div id="deltaContainer"></div>
   </div>
 
-  <!-- ── Tabla ── -->
+  <!-- Tabla -->
   <div class="card card-table">
-    <div class="card-label">Datos por década</div>
+    <div class="card-label">Datos por década · % del total de exportaciones mundiales</div>
     <div style="overflow-x:auto">
       <table class="data-table" id="dataTable"></table>
     </div>
   </div>
 
+  <!-- Fuente -->
+  <div class="card card-source">
+    <div class="source-box">
+      <span class="source-icon">📋</span>
+      <div>
+        <strong>Fuentes:</strong> UNCTAD (UNCTADstat) · Organización Mundial del Comercio (OMC/WTO) ·
+        FMI Direction of Trade Statistics (DOTS) · Banco Mundial · UN Comtrade<br>
+        <strong>Notas metodológicas:</strong>
+        Europa incluye Reino Unido en todo el período (pre y post Brexit) ·
+        Japón se presenta separado del grupo "Resto de Asia" por su peso histórico propio (peak ~8% en los años 80-90) ·
+        Oceanía incluye Australia, Nueva Zelanda y Pacífico ·
+        Resto de Asia incluye Corea del Sur, ASEAN, Taiwán, países del Golfo Pérsico y Asia Central ·
+        Los valores representan estimaciones de la participación de cada región como <em>destino</em> de exportaciones mundiales ·
+        Interpolación lineal entre años pivote · Los datos suman 100% en cada año.
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<div class="tooltip-custom" id="tooltip"></div>
+<div class="tip" id="tip"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 const D = window.__DASH_DATA__;
-if (!D) { document.body.innerHTML = '<p style="color:#555;padding:2rem">Esperando datos...</p>'; throw new Error('no data'); }
+if (!D) {
+  document.body.innerHTML = '<p style="color:#555;padding:2rem;font-family:monospace">Esperando datos...</p>';
+  throw new Error('no data');
+}
 
-// ── Defaults Chart.js ──────────────────────────────────────────────────────
-Chart.defaults.font.family  = "'DM Mono', monospace";
-Chart.defaults.font.size    = 11;
-Chart.defaults.color        = '#5a5a8a';
+// Defaults
+Chart.defaults.font.family = "'DM Mono', monospace";
+Chart.defaults.font.size   = 11;
+Chart.defaults.color       = '#5a5a8a';
 
-// ── Labels ────────────────────────────────────────────────────────────────
-document.getElementById('main-label').textContent =
-  `Evolución temporal · ${D.yearStart}–${D.yearEnd}`;
-document.getElementById('pie-label').textContent =
-  `Distribución en ${D.pieYear}`;
-document.getElementById('delta-label').textContent =
-  `Cambio en participación · ${D.yearStart} → ${D.yearEnd} (pp)`;
+// Labels dinámicos
+document.getElementById('lbl-main').textContent  = `Evolución temporal · ${D.yearStart}–${D.yearEnd}`;
+document.getElementById('lbl-pie').textContent   = `Distribución en ${D.pieYear}`;
+document.getElementById('lbl-delta').textContent = `Cambio en participación · ${D.yearStart} → ${D.yearEnd} (pp)`;
 
-// ── Gráfico principal ──────────────────────────────────────────────────────
-const typeMap = {
-  'Área apilada':   'line',
-  'Líneas':         'line',
-  'Barras apiladas':'bar',
-};
+// ── Gráfico principal ──────────────────────────────────────────────────────────
+const typeMap  = { 'Área apilada': 'line', 'Líneas': 'line', 'Barras apiladas': 'bar' };
 const chartType = typeMap[D.chartType] || 'line';
 const isStacked = D.chartType !== 'Líneas';
+const isFill    = D.chartType === 'Área apilada';
 
-const mainDatasets = D.datasets.map(ds => ({
-  label:           ds.label,
-  data:            ds.values,
-  borderColor:     ds.color,
-  backgroundColor: ds.color + (isStacked ? '28' : '18'),
-  fill:            D.chartType === 'Área apilada',
-  tension:         0.38,
-  borderWidth:     D.chartType === 'Líneas' ? 2.2 : 1.8,
-  pointRadius:     0,
-  pointHoverRadius:5,
+const mainDs = D.datasets.map(ds => ({
+  label:                     ds.label,
+  data:                      ds.values,
+  borderColor:               ds.color,
+  backgroundColor:           ds.color + (isStacked ? '2a' : '18'),
+  fill:                      isFill,
+  tension:                   0.38,
+  borderWidth:               D.chartType === 'Líneas' ? 2.2 : 1.8,
+  pointRadius:               0,
+  pointHoverRadius:          5,
   pointHoverBackgroundColor: ds.color,
 }));
 
-const tooltip = document.getElementById('tooltip');
+const tip = document.getElementById('tip');
 
 const mainCtx = document.getElementById('mainChart').getContext('2d');
 const mainChart = new Chart(mainCtx, {
   type: chartType,
-  data: { labels: D.years, datasets: mainDatasets },
+  data: { labels: D.years, datasets: mainDs },
   options: {
     responsive: true,
     animation: { duration: 900, easing: 'easeInOutQuart' },
@@ -307,32 +344,32 @@ const mainChart = new Chart(mainCtx, {
       },
     },
     onHover: (evt, els) => {
-      if (!els.length) { tooltip.style.display = 'none'; return; }
-      const idx = els[0].index;
+      if (!els.length) { tip.style.display = 'none'; return; }
+      const idx  = els[0].index;
       const year = D.years[idx];
-      let html = `<div class="tooltip-year">${year}</div>`;
-      D.datasets.forEach(ds => {
-        const val = ds.values[idx];
-        html += `<div class="tooltip-row">
-          <span class="dot" style="background:${ds.color}"></span>
+      const sorted = [...D.datasets].sort((a,b) => b.values[idx] - a.values[idx]);
+      let html = `<div class="tip-year">${year}</div>`;
+      sorted.forEach(ds => {
+        html += `<div class="tip-row">
+          <span class="tip-dot" style="background:${ds.color}"></span>
           <span>${ds.label}</span>
-          <span class="val">${val.toFixed(1)}%</span>
+          <span class="tip-val">${ds.values[idx].toFixed(1)}%</span>
         </div>`;
       });
-      tooltip.innerHTML = html;
-      tooltip.style.display = 'block';
+      tip.innerHTML = html;
+      tip.style.display = 'block';
       const rect = mainCtx.canvas.getBoundingClientRect();
-      tooltip.style.left = (rect.left + window.scrollX + evt.x + 14) + 'px';
-      tooltip.style.top  = (rect.top  + window.scrollY + evt.y - 20) + 'px';
+      let lx = rect.left + window.scrollX + evt.x + 16;
+      if (lx + 220 > window.innerWidth) lx = rect.left + window.scrollX + evt.x - 230;
+      tip.style.left = lx + 'px';
+      tip.style.top  = (rect.top + window.scrollY + evt.y - 24) + 'px';
     },
   },
 });
 
-document.getElementById('mainChart').addEventListener('mouseleave', () => {
-  tooltip.style.display = 'none';
-});
+document.getElementById('mainChart').addEventListener('mouseleave', () => { tip.style.display = 'none'; });
 
-// ── Leyenda interactiva ────────────────────────────────────────────────────
+// ── Leyenda ────────────────────────────────────────────────────────────────────
 const legend = document.getElementById('mainLegend');
 D.datasets.forEach((ds, i) => {
   const item = document.createElement('div');
@@ -347,7 +384,7 @@ D.datasets.forEach((ds, i) => {
   legend.appendChild(item);
 });
 
-// ── Donut ──────────────────────────────────────────────────────────────────
+// ── Donut ──────────────────────────────────────────────────────────────────────
 const pieCtx = document.getElementById('pieChart').getContext('2d');
 new Chart(pieCtx, {
   type: 'doughnut',
@@ -363,96 +400,84 @@ new Chart(pieCtx, {
   },
   options: {
     responsive: true,
-    cutout: '60%',
+    cutout: '58%',
     animation: { duration: 900, easing: 'easeInOutQuart' },
     plugins: {
       legend: {
         position: 'bottom',
         labels: {
           color: '#7070a0',
-          boxWidth: 10,
-          boxHeight: 10,
-          padding: 10,
-          font: { size: 10 },
+          boxWidth: 9, boxHeight: 9,
+          padding: 8,
+          font: { size: 9.5 },
           usePointStyle: true,
           pointStyle: 'circle',
         },
       },
       tooltip: {
         backgroundColor: '#10101e',
-        borderColor:     '#2e2e5a',
-        borderWidth:     1,
-        titleColor:      '#f0eee8',
-        bodyColor:       '#7070a0',
-        callbacks: {
-          label: ctx => ` ${ctx.label}: ${ctx.parsed.toFixed(1)}%`,
-        },
+        borderColor: '#2e2e5a',
+        borderWidth: 1,
+        titleColor: '#f0eee8',
+        bodyColor: '#7070a0',
+        callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed.toFixed(1)}%` },
       },
     },
   },
 });
 
-// ── Barras de delta ────────────────────────────────────────────────────────
-const maxAbs = Math.max(...D.cambios.map(c => Math.abs(c.delta)), 1);
+// ── Barras delta ───────────────────────────────────────────────────────────────
+const maxAbs    = Math.max(...D.cambios.map(c => Math.abs(c.delta)), 0.1);
 const container = document.getElementById('deltaContainer');
 
 D.cambios.forEach(c => {
-  const pct     = Math.abs(c.delta) / maxAbs * 48; // % del ancho total (la mitad)
-  const isPos   = c.delta >= 0;
-  const barLeft = isPos ? '50%' : `calc(50% - ${pct}%)`;
-  const color   = isPos ? c.color : '#FF4455';
+  const pct   = Math.abs(c.delta) / maxAbs * 46;
+  const isPos = c.delta >= 0;
+  const color = isPos ? c.color : '#FF4455';
+  const left  = isPos ? '50%' : `calc(50% - ${pct}%)`;
 
   const row = document.createElement('div');
   row.className = 'delta-row';
   row.innerHTML = `
     <span class="delta-label">${c.label}</span>
     <div class="delta-bar-wrap">
-      <div style="position:absolute;top:0;bottom:0;left:50%;width:1px;background:#1e1e3a;z-index:1"></div>
-      <div class="delta-bar" style="
-        left:${barLeft};
-        width:${pct}%;
-        background:${color}55;
-        border:1px solid ${color}88;
-        z-index:2;
-      "></div>
+      <div class="delta-zero"></div>
+      <div class="delta-bar" style="left:${left};width:${pct}%;background:${color}44;border:1px solid ${color}88;"></div>
     </div>
     <span class="delta-val" style="color:${color}">${c.delta > 0 ? '+' : ''}${c.delta.toFixed(1)}pp</span>
   `;
   container.appendChild(row);
 });
 
-// ── Tabla por década ───────────────────────────────────────────────────────
+// ── Tabla por décadas ──────────────────────────────────────────────────────────
 const decades = [1965,1970,1975,1980,1985,1990,1995,2000,2005,2010,2015,2020,2024];
-const rawData = {};
+const rawMap  = {};
 D.datasets.forEach(ds => {
-  rawData[ds.label] = {};
+  rawMap[ds.label] = {};
   decades.forEach(yr => {
     const idx = D.years.indexOf(yr);
-    rawData[ds.label][yr] = idx >= 0 ? ds.values[idx] : null;
+    rawMap[ds.label][yr] = idx >= 0 ? ds.values[idx] : null;
   });
 });
 
 const table = document.getElementById('dataTable');
-
-// Header
 const thead = table.createTHead();
 const hrow  = thead.insertRow();
 hrow.innerHTML = '<th>Región</th>' + decades.map(y => `<th>${y}</th>`).join('');
 
-// Body
 const tbody = table.createTBody();
 D.datasets.forEach(ds => {
-  const row = tbody.insertRow();
-  let html = `<td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${ds.color};margin-right:7px;vertical-align:middle"></span>${ds.label}</td>`;
-  const vals = decades.map(y => rawData[ds.label][y]);
+  const vals = decades.map(y => rawMap[ds.label][y]);
   const max  = Math.max(...vals.filter(Boolean));
   const min  = Math.min(...vals.filter(Boolean));
+  const row  = tbody.insertRow();
+  let html = `<td><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${ds.color};margin-right:6px;vertical-align:middle"></span>${ds.label}</td>`;
   vals.forEach(v => {
     let cls = '';
     if (v !== null) {
-      if (v >= max * 0.85)      cls = 'heat-high';
+      if (v >= max * 0.85)      cls = 'heat-hi';
       else if (v >= max * 0.55) cls = 'heat-mid';
-      else if (v <= min * 1.2)  cls = 'heat-low';
+      else if (v <= min * 1.25) cls = 'heat-lo';
     }
     html += `<td class="${cls}">${v !== null ? v.toFixed(1) + '%' : '—'}</td>`;
   });
